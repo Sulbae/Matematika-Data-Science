@@ -1273,7 +1273,7 @@ def training_params_estimation(df, features):
     # MULAI KODE DI SINI
 
     # Lakukan loop/iterasi pada setiap nilai di kolom "breed" dari dataframe.
-    for breed in df['breed'].unique():
+    for breed in df['breed']:
 
         # Filter dataframe berdasarkan ras (breed) dan kolom fitur tertentu.
         # Misalnya: df_dog_breed = df[df["breed"] == "Bulldog"][features]
@@ -1316,8 +1316,8 @@ def training_params_estimation(df, features):
                     # - Hitung peluang p, misalnya dengan membagi nilai rata-rata kolom dengan n.
                     # - Gunakan nilai n_trials dan probability ke dalam objek binomial_params.
                 case "sing_days":
-                    n_trials = int(df_bird_breed[feature].max())
-                    p = df_bird_breed[feature].mean() / n_trials
+                    n_trials = df_bird_breed[feature].max()
+                    p = df_bird_breed[feature].mean() / 30
                     params = binomial_params(n_trials=n_trials, probability=p)
 
                     # Untuk fitur "beak_head_ratio" yang mengikuti distribusi uniform.
