@@ -411,9 +411,9 @@ def viz_distribusi_gaussian(first_gaussian, second_gaussian, third_gaussian):
   # - alpha=0.5,
   # - Jumlah bins adalah 32.
   # - Menggunakan label sesuai jenis distribusi Gaussian-nya.
-  sns.histplot(data=first_gaussian, bins=32, color='lightblue' , alpha=0.5, label='first_gaussian', ax=ax)
-  sns.histplot(data=second_gaussian, bins=32, color='lightcoral' , alpha=0.5, label='second_gaussian', ax=ax)
-  sns.histplot(data=third_gaussian, bins=32, color='lightgreen' , alpha=0.5, label='third_gaussian', ax=ax)
+  sns.histplot(data=first_gaussian, bins=32, color='lightblue', edgecolor=None , alpha=0.5, label='first_gaussian', ax=ax)
+  sns.histplot(data=second_gaussian, bins=32, color='lightcoral', edgecolor=None , alpha=0.5, label='second_gaussian', ax=ax)
+  sns.histplot(data=third_gaussian, bins=32, color='lightgreen', edgecolor=None , alpha=0.5, label='third_gaussian', ax=ax)
 
   # AKHIRI KODE DI SINI
 
@@ -575,9 +575,9 @@ def viz_distribusi_binomial(first_binomial, second_binomial, third_binomial):
   # second_binomial, dan third_binomial dengan menggunakan parameter-parameter berikut.
   # - alpha=0.5,
   # - Menggunakan label sesuai dengan jenis distribusi Gaussian-nya.
-  sns.histplot(data=first_binomial, bins=10, color='lightblue' , alpha=0.5, label='first_binomial', ax=ax)
-  sns.histplot(data=second_binomial, bins=10, color='lightcoral' , alpha=0.5, label='second_binomial', ax=ax)
-  sns.histplot(data=third_binomial, bins=10, color='lightgreen' , alpha=0.5, label='third_binomial', ax=ax)
+  sns.histplot(data=first_binomial, color='lightblue', edgecolor=None , alpha=0.5, label='first_binomial', ax=ax)
+  sns.histplot(data=second_binomial, color='lightcoral', edgecolor=None , alpha=0.5, label='second_binomial', ax=ax)
+  sns.histplot(data=third_binomial, color='lightgreen', edgecolor=None , alpha=0.5, label='third_binomial', ax=ax)
 
   # AKHIRI KODE DI SINI
 
