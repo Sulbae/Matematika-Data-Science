@@ -232,7 +232,7 @@ def viz_uniform_teoretis(lower_bound, upper_bound, num_samples):
   # - Mengaktifkan probability density
   # - Menggunakan warna lightgrey
   # - Menggunakan edgecolor hitam
-  sns.histplot(data=data, bins=30, kde=True, color='lightgrey', edgecolor='black')
+  sns.histplot(data=data, bins=30, stat='density', color='lightgrey', edgecolor='black')
 
   # AKHIRI KODE DI SINI
 
@@ -411,9 +411,9 @@ def viz_distribusi_gaussian(first_gaussian, second_gaussian, third_gaussian):
   # - alpha=0.5,
   # - Jumlah bins adalah 32.
   # - Menggunakan label sesuai jenis distribusi Gaussian-nya.
-  sns.histplot(data=first_gaussian, bins=32, color='lightblue' , alpha=0.5, label='first_gaussian')
-  sns.histplot(data=second_gaussian, bins=32, color='lightcoral' , alpha=0.5, label='second_gaussian')
-  sns.histplot(data=third_gaussian, bins=32, color='lightgreen' , alpha=0.5, label='third_gaussian')
+  sns.histplot(data=first_gaussian, bins=32, color='lightblue' , alpha=0.5, label='first_gaussian', ax=ax)
+  sns.histplot(data=second_gaussian, bins=32, color='lightcoral' , alpha=0.5, label='second_gaussian', ax=ax)
+  sns.histplot(data=third_gaussian, bins=32, color='lightgreen' , alpha=0.5, label='third_gaussian', ax=ax)
 
   # AKHIRI KODE DI SINI
 
@@ -575,9 +575,9 @@ def viz_distribusi_binomial(first_binomial, second_binomial, third_binomial):
   # second_binomial, dan third_binomial dengan menggunakan parameter-parameter berikut.
   # - alpha=0.5,
   # - Menggunakan label sesuai dengan jenis distribusi Gaussian-nya.
-  sns.histplot(data=first_binomial, bins=32, color='lightblue' , alpha=0.5, label='first_gaussian')
-  sns.histplot(data=second_binomial, bins=32, color='lightcoral' , alpha=0.5, label='second_gaussian')
-  sns.histplot(data=third_binomial, bins=32, color='lightgreen' , alpha=0.5, label='third_gaussian')
+  sns.histplot(data=first_binomial, bins=10, color='lightblue' , alpha=0.5, label='first_binomial', ax=ax)
+  sns.histplot(data=second_binomial, bins=10, color='lightcoral' , alpha=0.5, label='second_binomial', ax=ax)
+  sns.histplot(data=third_binomial, bins=10, color='lightgreen' , alpha=0.5, label='third_binomial', ax=ax)
 
   # AKHIRI KODE DI SINI
 
@@ -1127,7 +1127,7 @@ def gaussian_params_estimation(sample):
   """
   # MULAI KODE DI SINI
   miu = np.mean(sample)
-  sigma = np.std(sample)
+  sigma = np.std(sample, ddof=0)
   # AKHIRI KODE DI SINI
 
   return miu, sigma
@@ -1294,37 +1294,36 @@ def training_params_estimation(df, features):
         # Kolom-kolom dataframe bisa didapat dengan dataframe.columns
         # Contoh: for feature in df_dog_breed.columns:
         for feature in df_bird_breed.columns:
-        # Percabangan untuk setiap fitur
-
-                # Untuk fitur "wingspan_cm" dan "weight_g" yang mengikuti distribusi Gaussian:
-                # - Hitung nilai rata-rata (μ) dan standar deviasi (σ) dari kolom fitur tersebut.
-                # - Gunakan nilai μ dan σ untuk membuat objek parameter dengan class gaussian_params.
-                #
-                # Contoh penerapan:
-                # mu = df_breed[feature].mean()   # rata-rata dari kolom fitur
-                # sigma = df_breed[feature].std()  # standar deviasi dari kolom fitur. Pastikan gunakan standar deviasi sampel.
-                # params = gaussian_params(miu=mu, sigma=sigma)
-                #
-                # Catatan: gunakan df_breed agar bisa lebih spesifik dengan output yang diharapkan.
+            # Percabangan untuk setiap fitur
             match feature:
+                    # Untuk fitur "wingspan_cm" dan "weight_g" yang mengikuti distribusi Gaussian:
+                    # - Hitung nilai rata-rata (μ) dan standar deviasi (σ) dari kolom fitur tersebut.
+                    # - Gunakan nilai μ dan σ untuk membuat objek parameter dengan class gaussian_params.
+                    #
+                    # Contoh penerapan:
+                    # mu = df_breed[feature].mean()   # rata-rata dari kolom fitur
+                    # sigma = df_breed[feature].std()  # standar deviasi dari kolom fitur. Pastikan gunakan standar deviasi sampel.
+                    # params = gaussian_params(miu=mu, sigma=sigma)
+                    #
+                    # Catatan: gunakan df_breed agar bisa lebih spesifik dengan output yang diharapkan.
                 case "wingspan_cm" | "weight_g":
                     mu = df_bird_breed[feature].mean()
-                    sigma = df_bird_breed[feature].std()
+                    sigma = df_bird_breed[feature].std(ddof=1)
                     params = gaussian_params(miu=mu, sigma=sigma)
 
-                # Untuk fitur "sing_days" yang mengikuti distribusi binomial.
-                # - Tentukan nilai n_trials (jumlah percobaan), biasanya bisa diambil dari nilai maksimum kolom ini.
-                # - Hitung peluang p, misalnya dengan membagi nilai rata-rata kolom dengan n.
-                # - Gunakan nilai n_trials dan probability ke dalam objek binomial_params.
+                    # Untuk fitur "sing_days" yang mengikuti distribusi binomial.
+                    # - Tentukan nilai n_trials (jumlah percobaan), biasanya bisa diambil dari nilai maksimum kolom ini.
+                    # - Hitung peluang p, misalnya dengan membagi nilai rata-rata kolom dengan n.
+                    # - Gunakan nilai n_trials dan probability ke dalam objek binomial_params.
                 case "sing_days":
                     n_trials = int(df_bird_breed[feature].max())
                     p = df_bird_breed[feature].mean() / n_trials
                     params = binomial_params(n_trials=n_trials, probability=p)
 
-                # Untuk fitur "beak_head_ratio" yang mengikuti distribusi uniform.
-                # - Tentukan nilai batas bawah (lower_bound) dengan nilai minimum dari kolom.
-                # - Tentukan nilai batas atas (upper_bound) dengan nilai maksimum dari kolom.
-                # - Gunakan nilai batas atas dan batas bawah ke dalam objek uniform_params.
+                    # Untuk fitur "beak_head_ratio" yang mengikuti distribusi uniform.
+                    # - Tentukan nilai batas bawah (lower_bound) dengan nilai minimum dari kolom.
+                    # - Tentukan nilai batas atas (upper_bound) dengan nilai maksimum dari kolom.
+                    # - Gunakan nilai batas atas dan batas bawah ke dalam objek uniform_params.
                 case "beak_head_ratio":
                     lower_bound = df_bird_breed[feature].min()
                     upper_bound = df_bird_breed[feature].max()
@@ -1428,7 +1427,7 @@ def probability_given_class(X, features, breed, params_dict):
 
     # MULAI KODE DI SINI
     # Lakukan perulangan untuk setiap X dan features.
-    for X, feature in zip(X, features):
+    for val, feature in zip(X, features):
         # Ambil breed dan freature yang sesuai dari params_dict yang diberikan.
         # Contoh: params = params_dict["Bulldog"]["Bark"]
         params = params_dict[breed][feature]
@@ -1437,13 +1436,13 @@ def probability_given_class(X, features, breed, params_dict):
                 # Hitung pdf sesuai distribusi gaussian menggunakan parameter estimasi dari tahapan sebelumnya.
                 # Contoh: probability_f = pdf_for_gaussian(x, params.miu, params.sigma)
             case "wingspan_cm" | "weight_g":
-                probability_f = pdf_for_gaussian(X, params.miu, params.sigma)
+                probability_f = pdf_for_gaussian(val, params.miu, params.sigma)
                 # Hitung pmf untuk distribusi binomial menggunakan parameter estimasi dari tahapan sebelumnya.
             case "sing_days":
-                probability_f = pmf_for_binomial(X, params.n_trials, params.probability)
+                probability_f = pmf_for_binomial(val, params.n_trials, params.probability)
                 # Hitung pdf untuk distribusi uniform dengan parameter estimasi dari tahapan sebelumnya.
             case "beak_head_ratio":
-                probability_f = pdf_for_uniform(X, params.lower_bound, params.upper_bound)
+                probability_f = pdf_for_uniform(val, params.lower_bound, params.upper_bound)
             case _:
                 continue
 
@@ -1506,9 +1505,9 @@ def breed_bird_prediction(X, features, params_dict, probs_dict):
 
     # Hitung nilai posterior untuk setiap jenis burung (0,1, dan 2)
     # Petunjuk: Gunakan fungsi probability sebelumnya lalu kalikan hasilnya dengan proporsi data untuk setiap jenis burung (probs_dict).
-    posterior_breed_0 = probability_given_class(X, features, params_dict, probs_dict[0])
-    posterior_breed_1 = probability_given_class(X, features, params_dict, probs_dict[1])
-    posterior_breed_2 = probability_given_class(X, features, params_dict, probs_dict[2])
+    posterior_breed_0 = probability_given_class(X, features, 0, params_dict) * probs_dict[0]
+    posterior_breed_1 = probability_given_class(X, features, 1, params_dict) * probs_dict[1]
+    posterior_breed_2 = probability_given_class(X, features, 2, params_dict) * probs_dict[2]
 
     # Simpan semua nilai posterior ke dalam numpy array
     # Kemudian ambil indeks dengan nilai tertinggi sebagai hasil prediksi
@@ -1522,7 +1521,7 @@ def breed_bird_prediction(X, features, params_dict, probs_dict):
 
 # Pengujian: Silakan gunakan cell ini untuk menguji fungsi yang Anda buat. Pastikan output-nya sesuai dengan yang diharapkan.
 
-example_pred = breed_bird_prediction([example_bird], FEATURES, train_params, train_class_probs)
+example_pred = breed_bird_prediction([*example_bird], FEATURES, train_params, train_class_probs)
 print(f"Contoh burung memiliki jenis {breed_bird} dan Naive Bayes mengklasifikasikannya sebagai {example_pred}")
 
 """# Evaluasi
@@ -1532,7 +1531,7 @@ Anda telah menyelesaikan seluruh tahapan implementasi Naive Bayes. Algoritma ter
 
 from sklearn.metrics import accuracy_score
 
-preds = df_test.apply(lambda x: breed_bird_prediction([x[FEATURES]], FEATURES, train_params, train_class_probs), axis=1)
+preds = df_test.apply(lambda x: breed_bird_prediction([*x[FEATURES]], FEATURES, train_params, train_class_probs), axis=1)
 test_acc = accuracy_score(df_test["breed"], preds)
 print(f"Accuracy score for the test split: {test_acc:.2f}")
 
